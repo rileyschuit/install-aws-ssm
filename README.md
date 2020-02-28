@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/rileyschuit/install-aws-ssm.svg?branch=master)](https://travis-ci.org/rileyschuit/install-aws-ssm)
+
 Install AWS System State Manager
 =========
 

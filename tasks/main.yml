@@ -44,6 +44,10 @@
 
 - name: Register Machine as hybrid instance
   shell: amazon-ssm-agent -register -code '{{ code_id }}' -id '{{ ssm_id }}' -region '{{ ssm_region }}'
+  when:
+    - code_id is defined
+    - ssm_id is defined
+    - ssm_region is defined
   register: registration_output
 
 - name: Start service
