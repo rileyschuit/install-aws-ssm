@@ -1,0 +1,64 @@
+---
+
+- name: Populate service facts
+  service_facts:
+
+- name: Install on ARM
+  when:
+    - '"arm" in ansible_facts.architecture'
+    - ansible_facts.services['amazon-ssm-agent.service'] is not defined
+  block:
+    - name: Install deb package
+      apt:
+        deb: https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/debian_arm/amazon-ssm-agent.deb
+      when:
+        - '"Debian" in ansible_facts.os_family'
+
+    - name: Install yum package
+      yum:
+        name: https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_arm64/amazon-ssm-agent.r
+      when:
+        - '"Centos" in ansible_facts.os_family' or '"RedHat" in ansible_facts.os_family'
+
+- name: Install onto 64 bit hosts
+  when:
+    - '"x86_64" in ansible_facts.architecture'
+    - ansible_facts.services['amazon-ssm-agent.service'] is not defined
+  block:
+    - name: Install deb package
+      apt:
+        deb: https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/debian_amd64/amazon-ssm-agent.deb
+      when:
+        - '"Debian" in ansible_facts.os_family'
+
+    - name: Install yum package
+      yum:
+        name: https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_amd64/amazon-ssm-agent.rpm
+      when:
+        - '"Centos" in ansible_facts.os_family' or '"RedHat" in ansible_facts.os_family'
+
+- name: Stop service
+  systemd:
+    name: amazon-ssm-agent
+    state: stopped
+
+- name: Register Machine as hybrid instance
+  shell: amazon-ssm-agent -register -code '{{ code_id }}' -id '{{ ssm_id }}' -region '{{ ssm_region }}'
+  register: registration_output
+
+- name: Start service
+  systemd:
+    name: amazon-ssm-agent
+    state: started
+
+- name: Install ansible
+  block:
+    apt:
+      name: ansible
+    when:
+      - '"Debian" in ansible_facts.os_family'
+
+    yum:
+      name: ansible
+    when:
+        - '"Centos" in ansible_facts.os_family' or '"RedHat" in ansible_facts.os_family'
