@@ -10,7 +10,7 @@ galaxy_info:
   platforms:
     - name: Raspbian
       versions:
-      - all
+        - all
     # - name: centos
     #   versions:
     #   - all
