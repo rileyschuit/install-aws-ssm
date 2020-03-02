@@ -1,9 +1,9 @@
 [![Build Status](https://travis-ci.org/rileyschuit/install-aws-ssm.svg?branch=master)](https://travis-ci.org/rileyschuit/install-aws-ssm)
 
-Install AWS System State Manager
+Anisible Role: Install AWS System State Manager
 =========
 
-This installs and registers the instance to AWS
+This installs ssm and registers the instance to AWS
 
 Requirements
 ------------
